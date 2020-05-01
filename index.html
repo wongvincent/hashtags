@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='UTF-8'>
+  <title>Hashtags</title>
+
+  <style>
+  html {
+    font-size: 20px;
+  }
+  body {
+    margin: 0;
+  }
+  #container {
+    max-height: 100vh;
+    display: flex;
+  }
+  form {
+    overflow-y: auto;
+    width: 400px;
+    display: inline-block;
+  }
+  #right-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+  #count {
+    margin: 20px;
+    display: inline-block;
+  }
+  #hashtags {
+    margin: 20px;
+    padding: 20px;
+  }
+  label {
+    display: block;
+    padding: 5px;
+  }
+  label:hover, input[type='checkbox']:checked {
+    background-color: #aadd00;
+  }
+  input[type='checkbox'] {
+    margin: 0 10px;
+    width: 20px;
+    height: 20px;
+    vertical-align: bottom;
+  }
+  #copy-hashtags-button {
+    padding: 20px;
+    font-size: 20px;
+    margin: 20px;
+  }
+  #randomize-selected {
+    width: 200px;
+    margin: 20px;
+    padding: 10px;
+    display: none;
+  }
+  </style>
+</head>
+
+<body>
+  <div id='container'>
+    <form></form>
+    <div id='right-panel'>
+      <div id='count'>Selected: <span id='count-text'></span></div>
+
+      <textarea id='hashtags'></textarea>
+      <button id='copy-hashtags-button' onclick='copyHashtagsToClipboard()'>Copy to Clipboard</button>
+      <button id='randomize-selected' onclick='randomizeSelected()'>Randomize Selected</button>
+    </div>
+  </div>
+
+  <script>
+    const defaultHashtags = ['goldendoodle', 'goldendoodlepuppy', 'doodlepuppy'];
+
+    const locationHashtags = [
+      'vancouverdogs', 'dogsofvancouver', 'dogsofcanada', 'vancouver', 'pnwdogs', 'vancitydogs'
+    ];
+
+    //  '狗', '狗狗', '小狗', '犬', '子犬'
+    const otherHashtags = [
+      'goldendoodles', 'groodle', 'pup', 'puppies', 'doggy', 'goldendoodlesofinstagram', 'doodlelove', 'goldendoodlesofinsta',
+      'doodlesofinstagram', 'doodlelove', 'doodletales', 'clubdoodle', 'doodleselfie', 'doodlelife', 'goldendoodlelove',
+      'doodlesofinsta', 'instadoodle', 'doodlesofig', 'goldendoodlesofig', 'ilovemydoodle', 'doodlegram', 'goldendoodleselfie',
+      'dogoftheday', 'doglover', 'ilovemydog', 'petstagram', 'puppylove', 'puppiesofinstagram', 'petsofinstagram', 'dogs_of_instagram',
+      'instapuppy', 'dogsofig', 'doglife', 'doglovers', 'instagramdogs', 'weeklyfluff', 'lovedogs', 'bestwoof', 'dogsofinstaworld',
+      'puppygram', 'puppyoftheday', 'instapet', 'cutedog', 'cutedogs', 'dogstagram', 'puppyoftheday', 'puppylover', 'puppylovers',
+      'doodlesofig', 'doodlesoftheworld', 'doodletales', 'doodleoftheday', 'doodledailyposts', 'doodlepup', 'puppies', 'pupper',
+      'puppylover', 'puppygram', 'puppiesofig', 'mediumgoldendoodle', 'doodledailyposts', 'delightfulgoldendoodles', 'dailybark',
+      'goldendoodlesdaily', 'dogsofinstagram', 'hereforthedoods', 'doodlelove', 'doodlelovers', 'doodleoftheday', 'doodleselfie',
+      'goldendoodle_daily', 'goldendoodlesofinstagram', 'dogscorner', 'dogsadventures', 'puppyofinstagram', 'puppysofinstagram',
+      'hereforthedoods', 'delightfulgoldendoodles', 'pupperino', 'adorabledog', 'dogmodels', 'dailypuppy', 'oodlesofdoodles',
+      'goldendoodlecentral', 'goldendoodlelife', 'dogplay', 'tongueouttuesday', 'tongueout'
+    ];
+
+    const shuffleInPlace = arr => {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * i);
+        const temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+      }
+    };
+
+    const returnUniqueSet = arr => {
+      let set = new Set();
+      arr.forEach(item => {
+        if (item.trim().length) {
+          set.add(item);
+        }
+      });
+      return set;
+    };
+
+    const returnShuffledUniqueArray = arr => {
+      const set = returnUniqueSet(arr);
+      const uniqueArray = [...set];
+      shuffleInPlace(uniqueArray);
+      return uniqueArray;
+    };
+
+    const generateHashtagsString = arr => {
+      const result = arr.map(tag => '#' + tag);
+      return result.join(' ');
+    };
+
+    const updateHashtagsElem = selectedItems => {
+      const hashtagsString = generateHashtagsString(selectedItems);
+
+      const hashtagsElem = document.getElementById('hashtags');
+      hashtagsElem.textContent = hashtagsString;
+    };
+
+    const updateSelectedCount = count => {
+      const countElem = document.getElementById('count-text');
+      countElem.textContent = count;
+    };
+
+    const renderCheckboxes = (hashtagArray, defaultSelected) => {
+      const form = document.getElementsByTagName('form')[0];
+      hashtagArray.forEach(hashtag => {
+        const labelElem = document.createElement('label');
+
+        const inputElem = document.createElement('input');
+        inputElem.setAttribute('type', 'checkbox');
+        inputElem.setAttribute('name', 'hashtag');
+        inputElem.setAttribute('value', hashtag);
+        if (defaultSelected) {
+          inputElem.setAttribute('checked', '');
+        }
+        inputElem.onclick = renderSelectedCountAndText;
+        labelElem.appendChild(inputElem);
+
+        const textNode = document.createTextNode(hashtag);
+        labelElem.appendChild(textNode);
+
+        form.appendChild(labelElem);
+      });
+    };
+
+    const getSelectedItems = () => {
+      const checkboxes = document.getElementsByName('hashtag');
+      return [...checkboxes].filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
+    };
+
+    const copyHashtagsToClipboard = () => {
+      const copyText = document.getElementById('hashtags');
+      copyText.select();
+      document.execCommand('copy');
+    };
+
+    const renderSelectedCountAndText = () => {
+      const selectedItems = getSelectedItems();
+      updateHashtagsElem(selectedItems);
+      updateSelectedCount(selectedItems.length);
+    };
+
+    const randomizeSelected = () => {
+      //not yet implemented
+    };
+
+    const onInit = () => {
+      const processedDefaultHashtags = returnShuffledUniqueArray(defaultHashtags);
+      const processedLocationHashtags = returnShuffledUniqueArray(locationHashtags);
+      const processedOtherHashtags = returnShuffledUniqueArray(otherHashtags);
+
+      renderCheckboxes(processedDefaultHashtags, true);
+      renderCheckboxes(processedLocationHashtags);
+      renderCheckboxes(processedOtherHashtags);
+
+      renderSelectedCountAndText();
+    };
+
+    (() => {
+      onInit();
+    })();
+  </script>
+</body>
+
+</html>
