@@ -20,6 +20,7 @@
     overflow-y: auto;
     width: 400px;
     display: inline-block;
+    padding-bottom: 1.5rem;
   }
   #right-panel {
     display: flex;
@@ -74,26 +75,33 @@
   </div>
 
   <script>
-    const defaultHashtags = ['goldendoodle', 'goldendoodlepuppy', 'doodlepuppy'];
+    const defaultHashtags = [];
 
     const locationHashtags = [
-      'vancouverdogs', 'dogsofvancouver', 'dogsofcanada', 'vancouver', 'pnwdogs', 'vancitydogs'
+      'vancouverdogs', 'dogsofvancouver', 'vancouverisawesome', 'dogsofcanada', 'canadadogs', 'doodsofcanada', 'pnwdogs', 'vancitydogs', 'westcoastdogs', 'falsecreek', 'dailyhivevan'
     ];
 
     //  '狗', '狗狗', '小狗', '犬', '子犬'
     const otherHashtags = [
-      'goldendoodles', 'groodle', 'pup', 'puppies', 'doggy', 'goldendoodlesofinstagram', 'doodlelove', 'goldendoodlesofinsta',
+      'goldendoodle', 'goldendoodlepuppy', 'doodlepuppy', 'goldendoodles', 'groodle', 'goldendoodlesofinstagram', 'doodlelove', 'goldendoodlesofinsta',
       'doodlesofinstagram', 'doodlelove', 'doodletales', 'clubdoodle', 'doodleselfie', 'doodlelife', 'goldendoodlelove',
-      'doodlesofinsta', 'instadoodle', 'doodlesofig', 'goldendoodlesofig', 'ilovemydoodle', 'doodlegram', 'goldendoodleselfie',
-      'dogoftheday', 'doglover', 'ilovemydog', 'petstagram', 'puppylove', 'puppiesofinstagram', 'petsofinstagram', 'dogs_of_instagram',
-      'instapuppy', 'dogsofig', 'doglife', 'doglovers', 'instagramdogs', 'weeklyfluff', 'lovedogs', 'bestwoof', 'dogsofinstaworld',
-      'puppygram', 'puppyoftheday', 'instapet', 'cutedog', 'cutedogs', 'dogstagram', 'puppyoftheday', 'puppylover', 'puppylovers',
-      'doodlesofig', 'doodlesoftheworld', 'doodletales', 'doodleoftheday', 'doodledailyposts', 'doodlepup', 'puppies', 'pupper',
-      'puppylover', 'puppygram', 'puppiesofig', 'mediumgoldendoodle', 'doodledailyposts', 'delightfulgoldendoodles', 'dailybark',
+      'doodlesofinsta', 'instadoodle', 'doodlesofig', 'goldendoodlesofig', 'ilovemydoodle', 'doodlegram', 'goldendoodleselfie', 'petstagram',
+      'bestwoof', 'puppygram', 'doodlesofig', 'doodlesoftheworld', 'doodletales', 'doodleoftheday', 'doodledailyposts', 'doodlepup',
+      'puppygram', 'puppiesofig', 'mediumgoldendoodle', 'doodledailyposts', 'dailybark', 'groodlesofinstagram',
       'goldendoodlesdaily', 'dogsofinstagram', 'hereforthedoods', 'doodlelove', 'doodlelovers', 'doodleoftheday', 'doodleselfie',
-      'goldendoodle_daily', 'goldendoodlesofinstagram', 'dogscorner', 'dogsadventures', 'puppyofinstagram', 'puppysofinstagram',
-      'hereforthedoods', 'delightfulgoldendoodles', 'pupperino', 'adorabledog', 'dogmodels', 'dailypuppy', 'oodlesofdoodles',
-      'goldendoodlecentral', 'goldendoodlelife', 'dogplay', 'tongueouttuesday', 'tongueout'
+      'goldendoodle_daily', 'hereforthedoods', 'delightfulgoldendoodles', 'pupperino', 'adorabledog', 'adorabledogs', 'dogmodels', 'oodlesofdoodles',
+      'goldendoodlecentral', 'goldendoodlelife', 'doodleboy', 'doodlenation', 'doodles2love', 'thedoodlefeed', 'thedailybarker', 'smilingdog', 'ゴールデンドゥードル'
+    ];
+    
+    const adventureHashtags = [
+      'dogswimming', 'swimmingdog', 'dogbeach', 'beachdog',
+      'hikingdog', 'adventurepup', 'dogsthathike', 'vancouvertrails', 'bcparks', 'hikebc', 'dogsadventures',
+      'dogplay', 'dogplaying', 'dogplaytime',
+      'dogphotoshoot', 'dogphotographer', 
+    ];
+
+    const temporaryHashtags = [
+      'sunshinecoastdogs', 'dogsofthesunshinecoast', 'sunshinecoast', 'sunshinecoastbc', 'beautifulbc'
     ];
 
     const shuffleInPlace = arr => {
@@ -114,10 +122,14 @@
       });
       return set;
     };
-
-    const returnShuffledUniqueArray = arr => {
+    
+    const returnUniqueArray = arr => {
       const set = returnUniqueSet(arr);
-      const uniqueArray = [...set];
+      return [...set];
+    };
+    
+    const returnShuffledUniqueArray = arr => {
+      const uniqueArray = returnUniqueArray(arr);
       shuffleInPlace(uniqueArray);
       return uniqueArray;
     };
@@ -139,8 +151,16 @@
       countElem.textContent = count;
     };
 
-    const renderCheckboxes = (hashtagArray, defaultSelected) => {
+    const renderCheckboxes = (hashtagArray, selectedByDefault, heading) => {
+      if (!hashtagArray || hashtagArray.length === 0) return;
+
       const form = document.getElementsByTagName('form')[0];
+
+      const headingElem = document.createElement('h4');
+      const headingTextNode = document.createTextNode(heading || '');
+      headingElem.appendChild(headingTextNode);
+      form.appendChild(headingElem);
+
       hashtagArray.forEach(hashtag => {
         const labelElem = document.createElement('label');
 
@@ -148,7 +168,7 @@
         inputElem.setAttribute('type', 'checkbox');
         inputElem.setAttribute('name', 'hashtag');
         inputElem.setAttribute('value', hashtag);
-        if (defaultSelected) {
+        if (selectedByDefault) {
           inputElem.setAttribute('checked', '');
         }
         inputElem.onclick = renderSelectedCountAndText;
@@ -184,12 +204,16 @@
 
     const onInit = () => {
       const processedDefaultHashtags = returnShuffledUniqueArray(defaultHashtags);
-      const processedLocationHashtags = returnShuffledUniqueArray(locationHashtags);
+      const processedLocationHashtags = returnUniqueArray(locationHashtags);
       const processedOtherHashtags = returnShuffledUniqueArray(otherHashtags);
+      const processedAdventureHashtags = returnUniqueArray(adventureHashtags);
+      const processedTemporaryHashtags = returnShuffledUniqueArray(temporaryHashtags);
 
-      renderCheckboxes(processedDefaultHashtags, true);
-      renderCheckboxes(processedLocationHashtags);
-      renderCheckboxes(processedOtherHashtags);
+      renderCheckboxes(processedDefaultHashtags, true, 'Default');
+      renderCheckboxes(processedLocationHashtags, false, 'Locations');
+      renderCheckboxes(processedOtherHashtags, false, 'Other');
+      renderCheckboxes(processedAdventureHashtags, false, 'Adventures');
+      renderCheckboxes(processedTemporaryHashtags, false, 'Temporary');
 
       renderSelectedCountAndText();
     };
