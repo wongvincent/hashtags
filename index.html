@@ -78,20 +78,22 @@
     const defaultHashtags = [];
 
     const locationHashtags = [
-      'vancouverdogs', 'dogsofvancouver', 'vancouverisawesome', 'dogsofcanada', 'canadadogs', 'doodsofcanada', 'pnwdogs', 'vancitydogs', 'westcoastdogs', 'falsecreek', 'dailyhivevan'
+      'vancouverdogs', 'dogsofvancouver', 'vancouverisawesome', 'dogsofcanada', 'canadadogs', 'doodsofcanada', 'pnwdogs', 'vancitydogs',
+      'westcoastdogs', 'falsecreek', 'dailyhivevan', 'doodsofcanada', 'doodlesofvancouver'
     ];
 
     //  '狗', '狗狗', '小狗', '犬', '子犬'
     const otherHashtags = [
-      'goldendoodle', 'goldendoodlepuppy', 'doodlepuppy', 'goldendoodles', 'groodle', 'goldendoodlesofinstagram', 'doodlelove', 'goldendoodlesofinsta',
-      'doodlesofinstagram', 'doodlelove', 'doodletales', 'clubdoodle', 'doodleselfie', 'doodlelife', 'goldendoodlelove',
+      'goldendoodle',  'goldendoodles', 'groodle', 'goldendoodlesofinstagram', 'doodlelove', 'goldendoodlesofinsta',
+      'doodlesofinstagram', 'doodletales', 'clubdoodle', 'doodleselfie', 'doodlelife', 'goldendoodlelove',
       'doodlesofinsta', 'instadoodle', 'doodlesofig', 'goldendoodlesofig', 'ilovemydoodle', 'doodlegram', 'goldendoodleselfie', 'petstagram',
-      'bestwoof', 'puppygram', 'doodlesofig', 'doodlesoftheworld', 'doodletales', 'doodleoftheday', 'doodledailyposts', 'doodlepup',
-      'puppygram', 'puppiesofig', 'mediumgoldendoodle', 'doodledailyposts', 'dailybark', 'groodlesofinstagram',
+      'bestwoof', 'doodlesofig', 'doodlesoftheworld', 'doodletales', 'doodleoftheday', 'doodledailyposts', 'doodlepup',
+      'mediumgoldendoodle', 'doodledailyposts', 'dailybark', 'groodlesofinstagram',
       'goldendoodlesdaily', 'dogsofinstagram', 'hereforthedoods', 'doodlelove', 'doodlelovers', 'doodleoftheday', 'doodleselfie',
-      'goldendoodle_daily', 'hereforthedoods', 'delightfulgoldendoodles', 'pupperino', 'adorabledog', 'adorabledogs', 'dogmodels', 'oodlesofdoodles',
-      'goldendoodlecentral', 'goldendoodlelife', 'doodleboy', 'doodlenation', 'doodles2love', 'thedoodlefeed', 'thedailybarker', 'smilingdog', 'ゴールデンドゥードル',
-      'goldendoodleheart', 'goldendoodlesrock', 'goldendoodlenation', 'goldendoodlemoments', 'mydogiscutest', 'growingpuppy'
+      'goldendoodle_daily', 'hereforthedoods', 'delightfulgoldendoodles', 'adorabledog', 'adorabledogs', 'dogmodels', 'oodlesofdoodles',
+      'goldendoodlecentral', 'goldendoodlelife', 'doodleboy', 'doodlenation', 'doodles2love', 'thedoodlefeed', 'smilingdog',
+      'goldendoodleheart', 'goldendoodlesrock', 'goldendoodlenation', 'goldendoodlemoments', 'mydogiscutest', 'dogsarelife', 'weeklyfluff', 'dogfluencer',
+      'pawsome', 'dogoftheday', 'doodlesofinstagram', '
     ];
 
     const adventureHashtags = [
@@ -108,6 +110,12 @@
     const birthdayHashtags = [
       'dogbirthday', 'birthdaydog', 'puppybirthday', 'oneyearbirthday'
     ];
+    
+    const puppyHashtags = [
+      'goldendoodlepuppy', 'doodlepuppy', 'puppygram', 'puppiesofig', 'pupperino', 'growingpuppy'
+    ];
+    
+    
 
     const shuffleInPlace = arr => {
       for (let i = arr.length - 1; i > 0; i--) {
@@ -214,6 +222,7 @@
       const processedAdventureHashtags = returnUniqueArray(adventureHashtags);
       const processedTemporaryHashtags = returnShuffledUniqueArray(temporaryHashtags);
       const processedBirthdayHashtags = returnShuffledUniqueArray(birthdayHashtags);
+      const processedPuppyHashtags = returnShuffledUniqueArray(puppyHashtags);
 
       renderCheckboxes(processedDefaultHashtags, true, 'Default');
       renderCheckboxes(processedLocationHashtags, false, 'Locations');
@@ -221,6 +230,7 @@
       renderCheckboxes(processedAdventureHashtags, false, 'Adventures');
       renderCheckboxes(processedTemporaryHashtags, false, 'Temporary');
       renderCheckboxes(processedBirthdayHashtags, false, 'Birthday');
+      renderCheckboxes(processedPuppyHashtags, false, 'Puppy');
 
       renderSelectedCountAndText();
     };
