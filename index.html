@@ -163,7 +163,8 @@
     };
 
     const renderCheckboxes = function() {
-      if (!this.hashtags || this.hashtags.length === 0) return;
+      const hashtags = this.hashtags;
+      if (!hashtags || hashtags.length === 0) return;
 
       const form = document.getElementsByTagName('form')[0];
 
@@ -172,7 +173,7 @@
       headingElem.appendChild(headingTextNode);
       form.appendChild(headingElem);
 
-      this.hashtags.forEach((hashtag) => {
+      hashtags.forEach((hashtag) => {
         const labelElem = document.createElement('label');
 
         const inputElem = document.createElement('input');
