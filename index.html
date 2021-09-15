@@ -106,16 +106,14 @@
     const temporaryHashtags = [
       'sunshinecoastdogs', 'dogsofthesunshinecoast', 'sunshinecoast', 'sunshinecoastbc', 'beautifulbc'
     ];
-    
+
     const birthdayHashtags = [
       'dogbirthday', 'birthdaydog', 'puppybirthday', 'oneyearbirthday'
     ];
-    
+
     const puppyHashtags = [
       'goldendoodlepuppy', 'doodlepuppy', 'puppygram', 'puppiesofig', 'pupperino', 'growingpuppy'
     ];
-    
-    
 
     const shuffleInPlace = arr => {
       for (let i = arr.length - 1; i > 0; i--) {
@@ -135,12 +133,12 @@
       });
       return set;
     };
-    
+
     const returnUniqueArray = arr => {
       const set = returnUniqueSet(arr);
       return [...set];
     };
-    
+
     const returnShuffledUniqueArray = arr => {
       const uniqueArray = returnUniqueArray(arr);
       shuffleInPlace(uniqueArray);
@@ -164,24 +162,24 @@
       countElem.textContent = count;
     };
 
-    const renderCheckboxes = (hashtagArray, selectedByDefault, heading) => {
-      if (!hashtagArray || hashtagArray.length === 0) return;
+    const renderCheckboxes = function() {
+      if (!this.hashtags || this.hashtags.length === 0) return;
 
       const form = document.getElementsByTagName('form')[0];
 
       const headingElem = document.createElement('h4');
-      const headingTextNode = document.createTextNode(heading || '');
+      const headingTextNode = document.createTextNode(this.title || '');
       headingElem.appendChild(headingTextNode);
       form.appendChild(headingElem);
 
-      hashtagArray.forEach(hashtag => {
+      this.hashtags.forEach((hashtag) => {
         const labelElem = document.createElement('label');
 
         const inputElem = document.createElement('input');
         inputElem.setAttribute('type', 'checkbox');
         inputElem.setAttribute('name', 'hashtag');
         inputElem.setAttribute('value', hashtag);
-        if (selectedByDefault) {
+        if (this.defaultChecked) {
           inputElem.setAttribute('checked', '');
         }
         inputElem.onclick = renderSelectedCountAndText;
@@ -215,22 +213,36 @@
       //not yet implemented
     };
 
-    const onInit = () => {
-      const processedDefaultHashtags = returnShuffledUniqueArray(defaultHashtags);
-      const processedLocationHashtags = returnUniqueArray(locationHashtags);
-      const processedOtherHashtags = returnShuffledUniqueArray(otherHashtags);
-      const processedAdventureHashtags = returnUniqueArray(adventureHashtags);
-      const processedTemporaryHashtags = returnShuffledUniqueArray(temporaryHashtags);
-      const processedBirthdayHashtags = returnShuffledUniqueArray(birthdayHashtags);
-      const processedPuppyHashtags = returnShuffledUniqueArray(puppyHashtags);
+    class HashtagCategory {
+      constructor(originalArray, title, shuffle, defaultChecked) {
+        this.originalArray = originalArray;
+        this.title = title;
+        this.shuffle = shuffle;
+        this.defaultChecked = defaultChecked;
+      }
 
-      renderCheckboxes(processedDefaultHashtags, true, 'Default');
-      renderCheckboxes(processedLocationHashtags, false, 'Locations');
-      renderCheckboxes(processedOtherHashtags, false, 'Other');
-      renderCheckboxes(processedAdventureHashtags, false, 'Adventures');
-      renderCheckboxes(processedTemporaryHashtags, false, 'Temporary');
-      renderCheckboxes(processedBirthdayHashtags, false, 'Birthday');
-      renderCheckboxes(processedPuppyHashtags, false, 'Puppy');
+      get hashtags() {
+        if (this.shuffle) {
+          return returnShuffledUniqueArray(this.originalArray);
+        }
+        return returnUniqueArray(this.originalArray);
+      }
+    }
+
+    const onInit = () => {
+      const renderCategoriesArray = [
+        new HashtagCategory(defaultHashtags, 'Default', true, true),
+        new HashtagCategory(locationHashtags, 'Locations', false),
+        new HashtagCategory(otherHashtags, 'Other', true),
+        new HashtagCategory(adventureHashtags, 'Adventures', false),
+        new HashtagCategory(temporaryHashtags, 'Temporary', true),
+        new HashtagCategory(birthdayHashtags, 'Birthday', true),
+        new HashtagCategory(puppyHashtags, 'Puppy', true)
+      ];
+
+      renderCategoriesArray.forEach(category => {
+        renderCheckboxes.call(category);
+      });
 
       renderSelectedCountAndText();
     };
